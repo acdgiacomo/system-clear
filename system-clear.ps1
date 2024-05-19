@@ -69,3 +69,43 @@ function HasUnsavedPowerPointDocuments {
     }
     return $false
 }
+
+function ClearTempFolder {
+    param (
+        [bool]$executeDirectly
+    )
+    if ($executeDirectly) {
+        $response = 's'
+    } else {
+        $response = Read-Host "`nDeseja limpar a pasta Temp do usuário atual? Isso removerá arquivos temporários. (s/n)"
+    }
+
+    if ($response -eq 's') {
+        $tempPath = [System.IO.Path]::GetTempPath()
+        Write-Host "`nLimpando a pasta Temp: $tempPath"
+        Remove-Item -Path "$tempPath*" -Force -Recurse -ErrorAction SilentlyContinue
+        Write-Host "Pasta Temp limpa."
+    } else {
+        Write-Host "`nPasta Temp do usuário atual não será limpa."
+    }
+}
+
+function ClearSystemTempFolder {
+    param (
+        [bool]$executeDirectly
+    )
+    if ($executeDirectly) {
+        $response = 's'
+    } else {
+        $response = Read-Host "`nDeseja limpar a pasta Temp do sistema? Isso removerá arquivos temporários do sistema. (s/n)"
+    }
+
+    if ($response -eq 's') {
+        $systemTempPath = "C:\Windows\Temp"
+        Write-Host "`nLimpando a pasta Temp do sistema: $systemTempPath"
+        Remove-Item -Path "$systemTempPath\*" -Force -Recurse -ErrorAction SilentlyContinue
+        Write-Host "Pasta Temp do sistema limpa."
+    } else {
+        Write-Host "`nPasta Temp do sistema não será limpa."
+    }
+}
