@@ -128,3 +128,67 @@ function EmptyRecycleBin {
         Write-Host "`nLixeira não será esvaziada."
     }
 }
+
+function ClearBrowserCaches {
+    param (
+        [bool]$executeDirectly
+    )
+
+    $browsers = @(
+        @{
+            Name = "Google Chrome"
+            Path = "$env:LocalAppData\Google\Chrome\User Data\Default\Cache"
+        },
+        @{
+            Name = "Microsoft Edge"
+            Path = "$env:LocalAppData\Microsoft\Edge\User Data\Default\Cache"
+        },
+        @{
+            Name = "Mozilla Firefox"
+            Path = "$env:LocalAppData\Mozilla\Firefox\Profiles"
+            ProfileSubfolder = "cache2"
+        },
+        @{
+            Name = "Opera"
+            Path = "$env:LocalAppData\Opera Software\Opera Stable\Cache"
+        },
+        @{
+            Name = "Opera GX"
+            Path = "$env:LocalAppData\Opera Software\Opera GX Stable\Cache"
+        },
+        @{
+            Name = "Brave"
+            Path = "$env:LocalAppData\BraveSoftware\Brave-Browser\User Data\Default\Cache"
+        }
+    )
+
+    if ($executeDirectly) {
+        $response = 's'
+    } else {
+        $response = Read-Host "`nDeseja limpar o cache dos navegadores instalados? Isso removerá arquivos temporários da internet. (s/n)"
+    }
+
+    if ($response -eq 's') {
+        foreach ($browser in $browsers) {
+            if (Test-Path $browser.Path) {
+                if ($browser.Name -eq "Mozilla Firefox") {
+                    $firefoxProfiles = Get-ChildItem -Path $browser.Path -Directory
+                    foreach ($profile in $firefoxProfiles) {
+                        $cachePath = "$browser.Path\$profile\$($browser.ProfileSubfolder)"
+                        if (Test-Path $cachePath) {
+                            Write-Host "`nLimpando o cache do $($browser.Name) no perfil $($profile.Name)"
+                            Remove-Item -Path "$cachePath\*" -Force -Recurse -ErrorAction SilentlyContinue
+                            Write-Host "Cache do $($browser.Name) limpo para o perfil $($profile.Name)."
+                        }
+                    }
+                } else {
+                    Write-Host "`nLimpando o cache do $($browser.Name) em $($browser.Path)"
+                    Remove-Item -Path "$($browser.Path)\*" -Force -Recurse -ErrorAction SilentlyContinue
+                    Write-Host "Cache do $($browser.Name) limpo."
+                }
+            }
+        }
+    } else {
+        Write-Host "`nCaches dos navegadores não serão limpos."
+    }
+}
