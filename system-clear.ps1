@@ -192,3 +192,41 @@ function ClearBrowserCaches {
         Write-Host "`nCaches dos navegadores não serão limpos."
     }
 }
+
+function ClearWindowsUpdateTempFiles {
+    param (
+        [bool]$executeDirectly
+    )
+    if ($executeDirectly) {
+        $response = 's'
+    } else {
+        $response = Read-Host "`nDeseja limpar os arquivos temporários do Windows Update? Isso removerá os arquivos baixados de atualizações. (s/n)"
+    }
+
+    if ($response -eq 's') {
+        Write-Host "`nLimpando arquivos temporários do Windows Update"
+        Remove-Item -Path "C:\Windows\SoftwareDistribution\Download\*" -Force -Recurse -ErrorAction SilentlyContinue
+        Write-Host "Arquivos temporários do Windows Update limpos."
+    } else {
+        Write-Host "`nArquivos temporários do Windows Update não serão limpos."
+    }
+}
+
+function ClearWindowsUpdateLogs {
+    param (
+        [bool]$executeDirectly
+    )
+    if ($executeDirectly) {
+        $response = 's'
+    } else {
+        $response = Read-Host "`nDeseja limpar os logs do Windows Update? Isso removerá os registros de atualizações passadas. (s/n)"
+    }
+
+    if ($response -eq 's') {
+        Write-Host "`nLimpando logs do Windows Update"
+        Remove-Item -Path "C:\Windows\Logs\WindowsUpdate\*" -Force -Recurse -ErrorAction SilentlyContinue
+        Write-Host "Logs do Windows Update limpos."
+    } else {
+        Write-Host "`nLogs do Windows Update não serão limpos."
+    }
+}
