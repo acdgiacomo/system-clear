@@ -283,3 +283,43 @@ function PerformSystemCleanup {
     DiskCleanup -executeDirectly $executeDirectly
     DisableFastStartup -executeDirectly $executeDirectly
 }
+
+if (-not (Test-Administrator)) {
+    Write-Error "`nERRO: Este script precisa ser executado como administrador. Por favor, execute novamente como administrador."
+    pause
+    exit
+}
+
+$executeAllDirectly = $false
+if ((Read-Host "`nDeseja executar todas as funções diretamente sem solicitar confirmação para cada uma? (s/n)") -eq 's') {
+    $executeAllDirectly = $true
+}
+
+$originalPolicy = Get-ExecutionPolicy -Scope Process
+
+Set-ExecutionPolicyRemoteSigned
+
+try {
+    PerformSystemCleanup -executeDirectly $executeAllDirectly
+
+    if (HasUnsavedNotepadDocuments -or HasUnsavedWordDocuments -or HasUnsavedExcelDocuments -or HasUnsavedPowerPointDocuments) {
+        Write-Warning "`nATENÇÃO: Existem documentos não salvos. Verifique antes de autorizar a reinicialização."
+    }
+
+    $confirmation = Read-Host "`nDeseja reiniciar o sistema agora? (s/n)"
+} catch {
+    Write-Error "`nOcorreu um erro inesperado. Por favor entrar em contato com o administrador [anaccdg]. Erro: $_"
+} finally {
+    Write-Host "`nRestaurando a política de execução..."
+    Restore-ExecutionPolicy -originalPolicy $originalPolicy
+    Write-Host "Política de execução restaurada."
+}
+
+if ($confirmation -eq 's') {
+    Write-Host "`nReiniciando o sistema..."
+    Restart-Computer -Force
+} else {
+    Write-Host "`nO sistema não será reiniciado."
+}
+
+pause
