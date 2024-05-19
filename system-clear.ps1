@@ -269,3 +269,17 @@ function DisableFastStartup {
         Write-Host "`nInicialização Rápida não será desabilitada."
     }
 }
+
+function PerformSystemCleanup {
+    param (
+        [bool]$executeDirectly
+    )
+    ClearTempFolder -executeDirectly $executeDirectly
+    ClearSystemTempFolder -executeDirectly $executeDirectly
+    EmptyRecycleBin -executeDirectly $executeDirectly
+    ClearBrowserCaches -executeDirectly $executeDirectly
+    ClearWindowsUpdateTempFiles -executeDirectly $executeDirectly
+    ClearWindowsUpdateLogs -executeDirectly $executeDirectly
+    DiskCleanup -executeDirectly $executeDirectly
+    DisableFastStartup -executeDirectly $executeDirectly
+}
