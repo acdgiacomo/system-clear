@@ -249,3 +249,23 @@ function DiskCleanup {
         Write-Host "`nLimpeza de disco não será executada."
     }
 }
+
+function DisableFastStartup {
+    param (
+        [bool]$executeDirectly
+    )
+    if ($executeDirectly) {
+        $response = 's'
+    } else {
+        $response = Read-Host "`nDeseja desabilitar a Inicialização Rápida? Isso pode melhorar o desempenho do sistema. (s/n)"
+    }
+
+    if ($response -eq 's') {
+        Write-Host "`nDesabilitando Inicialização Rápida..."
+        powercfg -h off
+        reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v HiberbootEnabled /t REG_DWORD /d 0 /f
+        Write-Host "Inicialização Rápida desabilitada.`n"
+    } else {
+        Write-Host "`nInicialização Rápida não será desabilitada."
+    }
+}
