@@ -230,3 +230,22 @@ function ClearWindowsUpdateLogs {
         Write-Host "`nLogs do Windows Update não serão limpos."
     }
 }
+
+function DiskCleanup {
+    param (
+        [bool]$executeDirectly
+    )
+    if ($executeDirectly) {
+        $response = 's'
+    } else {
+        $response = Read-Host "`nDeseja executar a limpeza de disco? Isso removerá arquivos desnecessários e temporários. (s/n)"
+    }
+
+    if ($response -eq 's') {
+        Write-Host "`nExecutando limpeza de disco"
+        Cleanmgr /sagerun:1
+        Write-Host "Limpeza de disco executada."
+    } else {
+        Write-Host "`nLimpeza de disco não será executada."
+    }
+}
