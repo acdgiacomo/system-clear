@@ -109,3 +109,22 @@ function ClearSystemTempFolder {
         Write-Host "`nPasta Temp do sistema não será limpa."
     }
 }
+
+function EmptyRecycleBin {
+    param (
+        [bool]$executeDirectly
+    )
+    if ($executeDirectly) {
+        $response = 's'
+    } else {
+        $response = Read-Host "`nDeseja esvaziar a Lixeira? Isso removerá permanentemente os arquivos na Lixeira. (s/n)"
+    }
+
+    if ($response -eq 's') {
+        Write-Host "`nEsvaziando a Lixeira"
+        Clear-RecycleBin -Force -ErrorAction SilentlyContinue
+        Write-Host "Lixeira esvaziada."
+    } else {
+        Write-Host "`nLixeira não será esvaziada."
+    }
+}
