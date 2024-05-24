@@ -21,7 +21,7 @@
 ```
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 ```
-3. Execute o Script (start.bat) como administrador.
+3. Execute o programa (SystemClear.lnk).
 
 #### License
 Ana Carla Callegarim Della Giacomo [anaccdg]
